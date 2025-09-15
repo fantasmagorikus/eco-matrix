@@ -66,3 +66,4 @@ Staging trigger: 2025-09-15T00:22:38Z
 - Use feature branches and open pull requests.
 - Keep changes focused; add or update docs when behavior changes.
 \nStaging trigger: 2025-09-15T02:58:36Z
+Staging trigger (vercel root fix): 2025-09-15T03:00:50Z
