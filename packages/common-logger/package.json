@@ -16,6 +16,8 @@
     "type-check": "tsc -p tsconfig.json --noEmit",
     "lint": "echo 'no lint for common-logger yet'",
     "test": "echo 'no tests for common-logger yet'"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4"
   }
 }
-

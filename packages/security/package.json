@@ -16,6 +16,8 @@
     "type-check": "tsc -p tsconfig.json --noEmit",
     "lint": "echo 'no lint for security yet'",
     "test": "echo 'no tests for security yet'"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4"
   }
 }
-
