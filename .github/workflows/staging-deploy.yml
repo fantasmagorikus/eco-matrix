@@ -101,3 +101,19 @@ jobs:
             echo "- Alias: https://eco-matrix-staging.vercel.app";
             echo "- Time (UTC): ${ts}";
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Health check (alias)
+        run: |
+          alias_url="https://eco-matrix-staging.vercel.app"
+          echo "Checking $alias_url ..."
+          for i in $(seq 1 30); do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' "$alias_url") || code=000
+            echo "Attempt $i: HTTP $code"
+            if [ "$code" = "200" ]; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "::error::Alias did not return 200 after waiting";
+          curl -sS "$alias_url" | head -n 40 || true
+          exit 1
