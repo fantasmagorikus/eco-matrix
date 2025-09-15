@@ -4,6 +4,11 @@ on:
   push:
     branches: [staging]
   workflow_dispatch:
+    inputs:
+      csp_report_only:
+        description: "Enable CSP report-only (true/false)"
+        required: false
+        default: "false"
 
 concurrency:
   group: staging-${{ github.ref }}
@@ -18,6 +23,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      CSP_REPORT_ONLY_INPUT: ${{ inputs.csp_report_only }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,7 +75,12 @@ jobs:
       - name: Deploy to Vercel (staging/preview)
         id: deploy
         run: |
-          url=$(pnpm dlx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
+          extra=""
+          if [ "${CSP_REPORT_ONLY_INPUT}" = "true" ]; then
+            extra="--env CSP_REPORT_ONLY=1 --env CSP_REPORT_URI=/api/csp-report"
+            echo "Enabling CSP report-only for this deploy"
+          fi
+          url=$(pnpm dlx vercel@latest deploy --prebuilt $extra --token="$VERCEL_TOKEN")
           echo "deployment_url=$url" >> $GITHUB_OUTPUT
           echo "Staging deployment: $url"
 
