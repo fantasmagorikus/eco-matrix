@@ -84,3 +84,16 @@ jobs:
             pnpm dlx vercel@latest alias set "$DEPLOYMENT_URL" eco-matrix-staging.vercel.app --token="$VERCEL_TOKEN" || true
             echo "Staging alias: https://eco-matrix-staging.vercel.app";
           fi
+
+      - name: Summary
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
+        run: |
+          ts=$(date -u '+%Y-%m-%d %H:%M:%SZ')
+          {
+            echo "## Staging Deploy";
+            echo;
+            echo "- URL: ${DEPLOYMENT_URL}";
+            echo "- Alias: https://eco-matrix-staging.vercel.app";
+            echo "- Time (UTC): ${ts}";
+          } >> "$GITHUB_STEP_SUMMARY"

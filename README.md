@@ -1,5 +1,15 @@
 # Eco Matrix
 
+[![Deploy / Staging (web)](https://github.com/fantasmagorikus/eco-matrix/actions/workflows/staging-deploy.yml/badge.svg?branch=staging)](https://github.com/fantasmagorikus/eco-matrix/actions/workflows/staging-deploy.yml?query=branch%3Astaging)
+[![Vercel Project](https://img.shields.io/badge/Vercel-eco--matrix-black?logo=vercel)](https://vercel.com/fantasmagorikus-projects/eco-matrix)
+[![Staging](https://img.shields.io/website?url=https%3A%2F%2Feco-matrix-staging.vercel.app&label=staging%20site)](https://eco-matrix-staging.vercel.app)
+
+## Status
+
+- Last staging commit: ![Last Commit](https://img.shields.io/github/last-commit/fantasmagorikus/eco-matrix/staging?label=staging%20last%20commit)
+- Staging URL: https://eco-matrix-staging.vercel.app
+- Staging runs: https://github.com/fantasmagorikus/eco-matrix/actions/workflows/staging-deploy.yml?query=branch%3Astaging
+
 A minimal monorepo scaffold for a web app deployed to Vercel.
 
 ## Repo Structure
@@ -25,19 +35,15 @@ These versions match the CI configuration.
 
 ## Local Development
 
-This repository currently does not include workspace manifests (e.g., `package.json`) or app source files.
-Once added, a typical Next.js flow looks like:
+From the repository root:
 
 ```bash
-# From repository root (monorepo)
 pnpm install
 
-# Start the web app (command may vary by your package name)
-cd apps/web
 pnpm dev
 ```
 
-If you need, I can scaffold the workspace and a basic Next.js app in `apps/web/` to get you running locally.
+This starts `apps/web` on http://localhost:3000.
 
 ## Deployment
 
@@ -45,7 +51,8 @@ If you need, I can scaffold the workspace and a basic Next.js app in `apps/web/`
 - The workflow uses `vercel` CLI to pull envs, build, and deploy a preview; it outputs the deployment URL.
 - Ensure the three Vercel secrets listed above are set in the GitHub repo settings.
 
-Staging trigger: 2025-09-15T00:22:38Z
+**Staging URL**
+- Stable alias: https://eco-matrix-staging.vercel.app
 
 ## Vercel Setup (Streamlined)
 
@@ -61,9 +68,12 @@ Staging trigger: 2025-09-15T00:22:38Z
   - This writes `.vercel/project.json` locally (ignored by Git).
 - Deploy: push to `staging` and check the job logs for the preview URL.
 
+## Troubleshooting
+
+- 404 DEPLOYMENT_NOT_FOUND: Ensure the Vercel project Root Directory is `apps/web` (fixed) and that CLI commands run from repo root (workflow updated). Re-run staging if needed.
+- pnpm version errors: The workflow reads the version from `package.json#packageManager`.
+
 ## Contributing
 
 - Use feature branches and open pull requests.
 - Keep changes focused; add or update docs when behavior changes.
-\nStaging trigger: 2025-09-15T02:58:36Z
-Staging trigger (vercel root fix): 2025-09-15T03:00:50Z
