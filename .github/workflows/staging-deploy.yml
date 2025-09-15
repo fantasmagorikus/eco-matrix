@@ -51,6 +51,13 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm dlx vercel@latest --version
 
+      - name: Verify Vercel auth
+        run: |
+          pnpm dlx vercel@latest whoami --token="$VERCEL_TOKEN" || {
+            echo "::error::Vercel token is invalid or lacks access. Please update VERCEL_TOKEN secret.";
+            exit 1;
+          }
+
       - name: Pull Vercel env (preview)
         run: |
           cd apps/web
