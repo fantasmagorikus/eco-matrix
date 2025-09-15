@@ -11,7 +11,22 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
+  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  collectCoverage: true,
+  collectCoverageFrom: [
+    '<rootDir>/app/**/*.{ts,tsx}',
+    '!<rootDir>/**/*.d.ts',
+  ],
+  coverageDirectory: '<rootDir>/coverage',
+  coverageReporters: ['text', 'lcov', 'json-summary'],
+  coverageThreshold: {
+    global: {
+      branches: 60,
+      functions: 60,
+      lines: 60,
+      statements: 60,
+    },
+  },
 }
 
 module.exports = createJestConfig(customJestConfig)
-

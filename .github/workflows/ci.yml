@@ -64,6 +64,13 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-web
+          path: apps/web/coverage
+
   web-build:
     name: web/build
     runs-on: ubuntu-latest
@@ -81,4 +88,3 @@ jobs:
         run: pnpm install
       - name: Build web app
         run: pnpm -C apps/web build
-
