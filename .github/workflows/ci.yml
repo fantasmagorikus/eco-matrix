@@ -10,6 +10,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  security-audit:
+    name: security/audit
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
+      - name: pnpm audit (high and critical)
+        run: pnpm audit --audit-level=high || true
+
   lint-all:
     name: lint/all
     runs-on: ubuntu-latest
@@ -70,6 +85,19 @@ jobs:
         with:
           name: coverage-web
           path: apps/web/coverage
+
+      - name: Coverage summary (job summary)
+        run: |
+          node -e "const fs=require('fs');const p='apps/web/coverage/coverage-summary.json';if(!fs.existsSync(p)){process.exit(0)};const j=JSON.parse(fs.readFileSync(p,'utf8'));const g=j.total;const md=['## Coverage','', '| Metric | % |','|---|---|',`| Lines | ${g.lines.pct} |`,`| Branches | ${g.branches.pct} |`,`| Functions | ${g.functions.pct} |`,`| Statements | ${g.statements.pct} |`,''].join('\n');fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,md);"
+
+      - name: Upload to Coveralls (public repos)
+        if: always()
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: apps/web/coverage/lcov.info
+          flag-name: web
+          parallel: false
 
   web-build:
     name: web/build

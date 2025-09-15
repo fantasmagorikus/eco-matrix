@@ -12,7 +12,15 @@ export function middleware(req: NextRequest) {
 
   // Security headers
   const isProd = process.env.NODE_ENV === 'production'
-  const csp = buildCsp(!isProd)
+  let csp = buildCsp(!isProd)
+  // Optional: enable CSP report-only + report URI via env vars
+  const reportOnly = process.env.CSP_REPORT_ONLY === '1'
+  const reportUri = process.env.CSP_REPORT_URI || '/api/csp-report'
+  if (reportOnly) {
+    // Add report-uri directive for legacy user agents
+    csp += `; report-uri ${reportUri}`
+    res.headers.set('content-security-policy-report-only', csp)
+  }
   res.headers.set('content-security-policy', csp)
   res.headers.set('strict-transport-security', 'max-age=63072000; includeSubDomains; preload')
   res.headers.set('referrer-policy', 'no-referrer')
