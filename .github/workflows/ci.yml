@@ -45,7 +45,7 @@ jobs:
           corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
-      - name: Lint
+      - name: Lint (all workspaces)
         run: pnpm lint
 
   typecheck-all:
@@ -65,7 +65,7 @@ jobs:
           corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
-      - name: Type check
+      - name: Type check (all workspaces)
         run: pnpm typecheck
 
   test-all:
@@ -85,15 +85,26 @@ jobs:
           corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
-      - name: Test
+      - name: Test (all workspaces)
         run: pnpm test
 
-      - name: Upload coverage artifact
+      - name: Upload coverage artifact (web)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-web
           path: apps/web/coverage
+          retention-days: 10
+
+      - name: Upload coverage artifacts (packages)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-packages
+          path: |
+            packages/**/coverage
+          if-no-files-found: ignore
+          retention-days: 10
 
       - name: Coverage summary (job summary)
         run: |
@@ -127,3 +138,50 @@ jobs:
         run: pnpm install
       - name: Build web app
         run: pnpm -C apps/web build
+      - name: Upload web build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: apps/web/.next
+          retention-days: 10
+
+  web-e2e:
+    name: web/e2e
+    runs-on: ubuntu-latest
+    needs: [web-build]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Enable corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
+      - name: Install deps
+        run: pnpm install
+      - name: Install Playwright browsers
+        run: pnpm -C apps/web exec playwright install --with-deps
+      - name: Build web before E2E
+        run: pnpm -C apps/web build
+      - name: Run Playwright tests (xvfb)
+        run: xvfb-run -a pnpm -C apps/web exec playwright test
+      - name: Upload Playwright results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            apps/web/test-results
+            apps/web/playwright-report
+          retention-days: 10
+      - name: Upload web build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: apps/web/.next

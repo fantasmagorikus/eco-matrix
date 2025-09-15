@@ -1,11 +1,10 @@
-import '@testing-library/jest-dom'
-
-// Polyfill Fetch API for jsdom environment so Next/server imports work in Jest.
+// Ensure Web Fetch API globals exist before modules under test are evaluated.
 try {
-  // @ts-ignore - undici is available in Node >=18
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { fetch, Request, Response, Headers } = require('undici')
   if (!globalThis.fetch) globalThis.fetch = fetch
   if (!globalThis.Request) globalThis.Request = Request
   if (!globalThis.Response) globalThis.Response = Response
   if (!globalThis.Headers) globalThis.Headers = Headers
 } catch {}
+

@@ -1,0 +1,13 @@
+{
+  "extends": "../../apps/web/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "composite": false,
+    "noEmit": false,
+    "rootDir": "src"
+  },
+  "include": ["src/**/*"]
+}
+
