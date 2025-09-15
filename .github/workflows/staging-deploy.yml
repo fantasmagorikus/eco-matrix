@@ -40,22 +40,22 @@ jobs:
         run: pnpm install
 
       - name: Install Vercel CLI
-        run: pnpm dlx -y vercel@latest --version
+        run: pnpm dlx vercel@latest --version
 
       - name: Pull Vercel env (preview)
         working-directory: apps/web
         run: |
-          pnpm dlx -y vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          pnpm dlx vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
 
       - name: Build (vercel prebuild)
         working-directory: apps/web
         run: |
-          pnpm dlx -y vercel@latest build --token="$VERCEL_TOKEN"
+          pnpm dlx vercel@latest build --token="$VERCEL_TOKEN"
 
       - name: Deploy to Vercel (staging/preview)
         id: deploy
         working-directory: apps/web
         run: |
-          url=$(pnpm dlx -y vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
+          url=$(pnpm dlx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
           echo "deployment_url=$url" >> $GITHUB_OUTPUT
           echo "Staging deployment: $url"
