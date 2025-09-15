@@ -19,6 +19,12 @@ export function middleware(req: NextRequest) {
   res.headers.set('x-content-type-options', 'nosniff')
   res.headers.set('x-frame-options', 'DENY')
   res.headers.set('permissions-policy', 'geolocation=(), microphone=(), camera=()')
+  // Cross-origin protections (safe defaults)
+  res.headers.set('cross-origin-opener-policy', 'same-origin')
+  res.headers.set('cross-origin-resource-policy', 'same-origin')
+  // Misc hardening
+  res.headers.set('x-dns-prefetch-control', 'off')
+  res.headers.set('x-permitted-cross-domain-policies', 'none')
 
   // Basic structured log to stdout (edge/runtime). Avoid logging bodies.
   try {
@@ -32,4 +38,3 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
-
