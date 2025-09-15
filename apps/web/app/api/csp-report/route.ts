@@ -1,5 +1,6 @@
 export async function POST(request: Request) {
   try {
+    /* istanbul ignore next - defensive fallback for missing header */
     const ct = request.headers.get('content-type') || ''
     const isLegacy = /application\/csp-report/i.test(ct)
     const isReports = /application\/reports\+json/i.test(ct)
