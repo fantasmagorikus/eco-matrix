@@ -1,0 +1,84 @@
+name: ci / gates
+
+on:
+  pull_request:
+  push:
+    branches: [staging]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-all:
+    name: lint/all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install deps
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint
+
+  typecheck-all:
+    name: typecheck/all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install deps
+        run: pnpm install
+      - name: Type check
+        run: pnpm typecheck
+
+  test-all:
+    name: test/all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install deps
+        run: pnpm install
+      - name: Test
+        run: pnpm test
+
+  web-build:
+    name: web/build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install deps
+        run: pnpm install
+      - name: Build web app
+        run: pnpm -C apps/web build
+
