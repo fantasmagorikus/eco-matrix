@@ -45,7 +45,7 @@ jobs:
           corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
-      - name: Lint
+      - name: Lint (all workspaces)
         run: pnpm lint
 
   typecheck-all:
@@ -65,7 +65,7 @@ jobs:
           corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
-      - name: Type check
+      - name: Type check (all workspaces)
         run: pnpm typecheck
 
   test-all:
@@ -85,10 +85,10 @@ jobs:
           corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
-      - name: Test
+      - name: Test (all workspaces)
         run: pnpm test
 
-      - name: Upload coverage artifact
+      - name: Upload coverage artifact (web)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -127,3 +127,9 @@ jobs:
         run: pnpm install
       - name: Build web app
         run: pnpm -C apps/web build
+      - name: Upload web build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: apps/web/.next

@@ -5,12 +5,20 @@
   "engines": {
     "node": "^20"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": [
+      "prettier --write"
+    ]
+  },
   "scripts": {
-    "build": "pnpm -C apps/web build",
-    "dev": "pnpm -C apps/web dev",
+    "build": "pnpm -r run build",
+    "build:apps": "pnpm -r --filter ./apps/* run build",
+    "build:packages": "pnpm -r --filter ./packages/* run build",
+    "dev": "pnpm -r --parallel --filter ./apps/* run dev",
     "start": "pnpm -C apps/web start",
-    "lint": "pnpm -C apps/web lint",
-    "typecheck": "pnpm -C apps/web type-check",
-    "test": "pnpm -C apps/web test"
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run type-check",
+    "test": "pnpm -r run test",
+    "prettier": "prettier --write ."
   }
 }
