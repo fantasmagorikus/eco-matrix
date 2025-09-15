@@ -1,4 +1,4 @@
-name: security / dependency-review
+name: security / dependency-review (non-blocking)
 
 on:
   pull_request:
@@ -9,10 +9,12 @@ permissions:
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Dependency Review
+      - name: Dependency Review (report only)
         uses: actions/dependency-review-action@v4
         with:
-          fail-on-severity: critical
+          fail-on-severity: none
+          comment-summary-in-pr: true

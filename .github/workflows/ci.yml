@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   security-audit:
-    name: security/audit
+    name: security/audit (non-blocking)
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -22,7 +22,7 @@ jobs:
           cache: pnpm
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - name: pnpm audit (high and critical)
+      - name: pnpm audit (report only)
         run: pnpm audit --audit-level=high || true
 
   lint-all:
