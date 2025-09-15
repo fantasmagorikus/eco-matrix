@@ -10,6 +10,15 @@
 - Staging URL: https://eco-matrix-staging.vercel.app
 - Staging runs: https://github.com/fantasmagorikus/eco-matrix/actions/workflows/staging-deploy.yml?query=branch%3Astaging
 
+## Promote to Production (Manual)
+
+- Use the manual workflow to alias a deployment to a production domain.
+- Run from GitHub → Actions → "promote / production (manual)" → Run workflow.
+- Inputs:
+  - `target_domain` (required): e.g., `eco-matrix.vercel.app`
+  - `deployment_url` (optional): if blank, it uses the latest deployment
+- The job sets the alias and posts a summary with the final URL.
+
 A minimal monorepo scaffold for a web app deployed to Vercel.
 
 ## Repo Structure

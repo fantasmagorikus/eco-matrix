@@ -1,0 +1,85 @@
+name: promote / production (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_domain:
+        description: "Domain to alias (e.g., eco-matrix.vercel.app)"
+        required: true
+        default: "eco-matrix.vercel.app"
+      deployment_url:
+        description: "Optional: deployment URL to promote (e.g., https://<id>-<team>.vercel.app)"
+        required: false
+
+concurrency:
+  group: promote-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Alias deployment to production domain
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      TARGET_DOMAIN: ${{ inputs.target_domain }}
+      INPUT_DEPLOYMENT_URL: ${{ inputs.deployment_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Preflight
+        run: |
+          : "${VERCEL_TOKEN:?Missing VERCEL_TOKEN}"
+          : "${VERCEL_ORG_ID:?Missing VERCEL_ORG_ID}"
+          : "${VERCEL_PROJECT_ID:?Missing VERCEL_PROJECT_ID}"
+          : "${TARGET_DOMAIN:?Missing target domain input}"
+
+      - name: Resolve deployment URL
+        id: resolve
+        run: |
+          if [ -n "${INPUT_DEPLOYMENT_URL}" ]; then
+            echo "Using provided deployment URL: ${INPUT_DEPLOYMENT_URL}"
+            echo "deployment_url=${INPUT_DEPLOYMENT_URL}" >> "$GITHUB_OUTPUT"
+          else
+            echo "Fetching latest READY deployment from Vercel API..."
+            url=$(curl -fsSL "https://api.vercel.com/v6/deployments?teamId=${VERCEL_ORG_ID}&projectId=${VERCEL_PROJECT_ID}&limit=1" \
+              -H "Authorization: Bearer ${VERCEL_TOKEN}" | jq -r '.deployments[0].url // empty')
+            if [ -z "$url" ]; then
+              echo "::error::No deployment found to promote"; exit 1;
+            fi
+            echo "deployment_url=https://$url" >> "$GITHUB_OUTPUT"
+            echo "Latest deployment: https://$url"
+          fi
+
+      - name: Alias to production domain
+        env:
+          DEPLOYMENT_URL: ${{ steps.resolve.outputs.deployment_url }}
+        run: |
+          echo "Aliasing ${DEPLOYMENT_URL} -> ${TARGET_DOMAIN}"
+          pnpm dlx vercel@latest alias set "${DEPLOYMENT_URL}" "${TARGET_DOMAIN}" --token="${VERCEL_TOKEN}"
+          echo "Alias set: https://${TARGET_DOMAIN}"
+
+      - name: Summary
+        env:
+          DEPLOYMENT_URL: ${{ steps.resolve.outputs.deployment_url }}
+        run: |
+          ts=$(date -u '+%Y-%m-%d %H:%M:%SZ')
+          {
+            echo "## Promote to Production";
+            echo;
+            echo "- Deployment: ${DEPLOYMENT_URL}";
+            echo "- Alias: https://${TARGET_DOMAIN}";
+            echo "- Time (UTC): ${ts}";
+          } >> "$GITHUB_STEP_SUMMARY"
+
