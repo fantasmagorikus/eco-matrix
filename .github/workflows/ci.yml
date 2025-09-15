@@ -20,7 +20,10 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - uses: pnpm/action-setup@v4
+      - name: Enable corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
       - run: pnpm install
       - name: pnpm audit (report only)
         run: pnpm audit --audit-level=high || true
@@ -36,8 +39,10 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Enable corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
       - name: Lint
@@ -54,8 +59,10 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Enable corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
       - name: Type check
@@ -72,8 +79,10 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Enable corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
       - name: Test
@@ -110,8 +119,10 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Enable corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
       - name: Install deps
         run: pnpm install
       - name: Build web app
