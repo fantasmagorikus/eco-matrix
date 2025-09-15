@@ -95,6 +95,15 @@ jobs:
           name: coverage-web
           path: apps/web/coverage
 
+      - name: Upload coverage artifacts (packages)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-packages
+          path: |
+            packages/**/coverage
+          if-no-files-found: ignore
+
       - name: Coverage summary (job summary)
         run: |
           node -e "const fs=require('fs');const p='apps/web/coverage/coverage-summary.json';if(!fs.existsSync(p)){process.exit(0)};const j=JSON.parse(fs.readFileSync(p,'utf8'));const g=j.total;const md=['## Coverage','', '| Metric | % |','|---|---|',`| Lines | ${g.lines.pct} |`,`| Branches | ${g.branches.pct} |`,`| Functions | ${g.functions.pct} |`,`| Statements | ${g.statements.pct} |`,''].join('\n');fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,md);"
@@ -127,6 +136,43 @@ jobs:
         run: pnpm install
       - name: Build web app
         run: pnpm -C apps/web build
+      - name: Upload web build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: apps/web/.next
+
+  web-e2e:
+    name: web/e2e
+    runs-on: ubuntu-latest
+    needs: [web-build]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Enable corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
+      - name: Install deps
+        run: pnpm install
+      - name: Install Playwright browsers
+        run: pnpm -C apps/web exec playwright install --with-deps
+      - name: Run Playwright tests
+        run: pnpm -C apps/web exec playwright test --reporter=line
+      - name: Upload Playwright results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            apps/web/test-results
+            apps/web/playwright-report
       - name: Upload web build artifact
         if: success()
         uses: actions/upload-artifact@v4

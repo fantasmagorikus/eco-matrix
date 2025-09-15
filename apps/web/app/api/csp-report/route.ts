@@ -1,12 +1,19 @@
 export async function POST(request: Request) {
   try {
+    const ct = request.headers.get('content-type') || ''
+    const isLegacy = /application\/csp-report/i.test(ct)
+    const isReports = /application\/reports\+json/i.test(ct)
+    if (!isLegacy && !isReports) {
+      return new Response('Unsupported Content-Type', { status: 400 })
+    }
     const bodyText = await request.text()
-    // Some browsers send application/csp-report with {"csp-report":{...}}
-    // Others may use application/reports+json. Log raw to avoid parse errors.
+    // Log raw to avoid parse errors leaking
+    // eslint-disable-next-line no-console
     console.warn('[CSP-REPORT]', bodyText)
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.warn('[CSP-REPORT] failed to read body', err)
+    return new Response('Bad Request', { status: 400 })
   }
   return new Response(null, { status: 204 })
 }
-

@@ -11,5 +11,14 @@ describe('csp-report route', () => {
     const res = await POST(req)
     expect(res.status).toBe(204)
   })
-})
 
+  it('rejects invalid content-type with 400', async () => {
+    const req = new Request('http://localhost/api/csp-report', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: '{}',
+    })
+    const res = await POST(req)
+    expect(res.status).toBe(400)
+  })
+})
