@@ -3,6 +3,7 @@
 [![Deploy / Staging (web)](https://github.com/fantasmagorikus/eco-matrix/actions/workflows/staging-deploy.yml/badge.svg?branch=staging)](https://github.com/fantasmagorikus/eco-matrix/actions/workflows/staging-deploy.yml?query=branch%3Astaging)
 [![Vercel Project](https://img.shields.io/badge/Vercel-eco--matrix-black?logo=vercel)](https://vercel.com/fantasmagorikus-projects/eco-matrix)
 [![Staging](https://img.shields.io/website?url=https%3A%2F%2Feco-matrix-staging.vercel.app&label=staging%20site)](https://eco-matrix-staging.vercel.app)
+[![Promote to Production](https://img.shields.io/badge/Promote%20to%20Production-run%20workflow-blue?logo=githubactions)](https://github.com/fantasmagorikus/eco-matrix/actions/workflows/promote-production.yml)
 
 ## Status
 
@@ -18,6 +19,8 @@
   - `target_domain` (required): e.g., `eco-matrix.vercel.app`
   - `deployment_url` (optional): if blank, it uses the latest deployment
 - The job sets the alias and posts a summary with the final URL.
+
+[Run the promote workflow](https://github.com/fantasmagorikus/eco-matrix/actions/workflows/promote-production.yml)
 
 A minimal monorepo scaffold for a web app deployed to Vercel.
 
