@@ -1,0 +1,14 @@
+{
+  "name": "eco-matrix",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": "^20"
+  },
+  "scripts": {
+    "build": "pnpm -C apps/web build",
+    "dev": "pnpm -C apps/web dev",
+    "start": "pnpm -C apps/web start",
+    "lint": "pnpm -C apps/web lint"
+  }
+}
