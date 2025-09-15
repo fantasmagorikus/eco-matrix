@@ -1,10 +1,6 @@
 {
+  "root": true,
   "extends": ["next/core-web-vitals"],
-  "env": {
-    "jest": true
-  },
-  "ignorePatterns": [
-    ".next/",
-    "coverage/"
-  ]
+  "rules": {}
 }
+

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { render, screen } from '@testing-library/react'
 import HomePage from './page'
 
@@ -9,4 +12,3 @@ describe('HomePage', () => {
     ).toBeInTheDocument()
   })
 })
-
