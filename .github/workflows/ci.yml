@@ -94,6 +94,7 @@ jobs:
         with:
           name: coverage-web
           path: apps/web/coverage
+          retention-days: 10
 
       - name: Upload coverage artifacts (packages)
         if: always()
@@ -103,6 +104,7 @@ jobs:
           path: |
             packages/**/coverage
           if-no-files-found: ignore
+          retention-days: 10
 
       - name: Coverage summary (job summary)
         run: |
@@ -142,6 +144,7 @@ jobs:
         with:
           name: web-build
           path: apps/web/.next
+          retention-days: 10
 
   web-e2e:
     name: web/e2e
@@ -163,8 +166,10 @@ jobs:
         run: pnpm install
       - name: Install Playwright browsers
         run: pnpm -C apps/web exec playwright install --with-deps
-      - name: Run Playwright tests
-        run: pnpm -C apps/web exec playwright test --reporter=line
+      - name: Build web before E2E
+        run: pnpm -C apps/web build
+      - name: Run Playwright tests (xvfb)
+        run: xvfb-run -a pnpm -C apps/web exec playwright test
       - name: Upload Playwright results
         if: always()
         uses: actions/upload-artifact@v4
@@ -173,6 +178,7 @@ jobs:
           path: |
             apps/web/test-results
             apps/web/playwright-report
+          retention-days: 10
       - name: Upload web build artifact
         if: success()
         uses: actions/upload-artifact@v4

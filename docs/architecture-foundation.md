@@ -20,6 +20,11 @@ Whitelist origins (tight):
 - Lint/Type-check/Test/Build across all workspaces using `pnpm -r`
 - Artifacts: coverage (web) and web build output
 
+### Nightly CI (reliability)
+- Playwright retries=2 on CI, forbidOnly=true
+- Build web before E2E runs; reuse server locally
+- Upload artifacts (coverage, test-results, playwright-report) with 10-day retention
+
 ## Observability
 - x-request-id: issued at the edge (middleware) and propagated on outbound calls via common-http
 - Log shape: `{ time, level, service, env, requestId, msg, ... }`

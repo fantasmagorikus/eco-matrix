@@ -1,7 +1,12 @@
-import type { PlaywrightTestConfig } from '@playwright/test'
+import { defineConfig } from '@playwright/test'
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
   timeout: 60_000,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  reporter: process.env.CI
+    ? [['github'], ['html', { outputFolder: 'playwright-report' }]]
+    : 'list',
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'retain-on-failure',
@@ -9,11 +14,8 @@ const config: PlaywrightTestConfig = {
   },
   webServer: {
     command: 'pnpm start -p 3000',
-    port: 3000,
+    url: 'http://localhost:3000',
     timeout: 120_000,
     reuseExistingServer: !process.env.CI,
   },
-}
-
-export default config
-
+})
