@@ -4,6 +4,11 @@ on:
   push:
     branches: [staging]
   workflow_dispatch:
+    inputs:
+      csp_report_only:
+        description: "Enable CSP report-only (true/false)"
+        required: false
+        default: "false"
 
 concurrency:
   group: staging-${{ github.ref }}
@@ -18,6 +23,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      CSP_REPORT_ONLY_INPUT: ${{ inputs.csp_report_only }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -59,27 +65,28 @@ jobs:
           }
 
       - name: Pull Vercel env (preview)
-        working-directory: apps/web
         run: |
           pnpm dlx vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
 
       - name: Build (vercel prebuild)
-        working-directory: apps/web
         run: |
           pnpm dlx vercel@latest build --token="$VERCEL_TOKEN"
 
       - name: Deploy to Vercel (staging/preview)
         id: deploy
-        working-directory: apps/web
         run: |
-          url=$(pnpm dlx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
+          extra=""
+          if [ "${CSP_REPORT_ONLY_INPUT}" = "true" ]; then
+            extra="--env CSP_REPORT_ONLY=1 --env CSP_REPORT_URI=/api/csp-report"
+            echo "Enabling CSP report-only for this deploy"
+          fi
+          url=$(pnpm dlx vercel@latest deploy --prebuilt $extra --token="$VERCEL_TOKEN")
           echo "deployment_url=$url" >> $GITHUB_OUTPUT
           echo "Staging deployment: $url"
 
       - name: Alias staging domain
         env:
           DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
-        working-directory: apps/web
         run: |
           if [ -z "${DEPLOYMENT_URL}" ]; then
             echo "::warning::No deployment URL found to alias";
