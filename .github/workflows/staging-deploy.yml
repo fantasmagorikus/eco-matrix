@@ -60,18 +60,15 @@ jobs:
 
       - name: Pull Vercel env (preview)
         run: |
-          cd apps/web
           pnpm dlx vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
 
       - name: Build (vercel prebuild)
         run: |
-          cd apps/web
           pnpm dlx vercel@latest build --token="$VERCEL_TOKEN"
 
       - name: Deploy to Vercel (staging/preview)
         id: deploy
         run: |
-          cd apps/web
           url=$(pnpm dlx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
           echo "deployment_url=$url" >> $GITHUB_OUTPUT
           echo "Staging deployment: $url"
