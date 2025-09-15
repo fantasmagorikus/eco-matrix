@@ -72,3 +72,15 @@ jobs:
           url=$(pnpm dlx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
           echo "deployment_url=$url" >> $GITHUB_OUTPUT
           echo "Staging deployment: $url"
+
+      - name: Alias staging domain
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
+        run: |
+          if [ -z "${DEPLOYMENT_URL}" ]; then
+            echo "::warning::No deployment URL found to alias";
+          else
+            echo "Aliasing $DEPLOYMENT_URL -> eco-matrix-staging.vercel.app";
+            pnpm dlx vercel@latest alias set "$DEPLOYMENT_URL" eco-matrix-staging.vercel.app --token="$VERCEL_TOKEN" || true
+            echo "Staging alias: https://eco-matrix-staging.vercel.app";
+          fi
