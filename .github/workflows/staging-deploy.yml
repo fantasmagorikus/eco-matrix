@@ -58,8 +58,4 @@ jobs:
         run: |
           url=$(pnpm dlx -y vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
           echo "deployment_url=$url" >> $GITHUB_OUTPUT
-
-      - name: Output deployment URL
-        env:
-          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
-        run: echo "Staging deployment: $DEPLOYMENT_URL"
+          echo "Staging deployment: $url"
