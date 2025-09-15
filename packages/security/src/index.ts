@@ -2,7 +2,9 @@ export const DEFAULT_CORS_WHITELIST = [
   'http://localhost:3000',
   'https://eco-matrix-staging.vercel.app',
   'https://lokomemo.com',
+  'https://lokomemo.tv',
   'https://admin.lokomemo.com',
+  'https://admin.lokomemo.tv',
 ]
 
 export type CorsOptions = {
@@ -72,4 +74,3 @@ export function createRateLimiter({
     return true
   }
 }
-

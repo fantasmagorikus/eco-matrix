@@ -12,7 +12,9 @@ Whitelist origins (tight):
 - http://localhost:3000
 - https://eco-matrix-staging.vercel.app
 - https://lokomemo.com
+- https://lokomemo.tv
 - https://admin.lokomemo.com
+- https://admin.lokomemo.tv
 
 ## CI/CD
 - Lint/Type-check/Test/Build across all workspaces using `pnpm -r`
@@ -25,4 +27,3 @@ Whitelist origins (tight):
 ## Next Steps
 - BFF (Apollo+Fastify) using the shared packages and CORS
 - Matrix bridge (private, text-only, no federation), GraphQL chat resolvers in BFF
-
