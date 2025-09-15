@@ -77,3 +77,4 @@ This starts `apps/web` on http://localhost:3000.
 
 - Use feature branches and open pull requests.
 - Keep changes focused; add or update docs when behavior changes.
+\nStaging trigger (framework set to nextjs): 2025-09-15T03:23:29Z
