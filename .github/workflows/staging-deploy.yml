@@ -1,0 +1,63 @@
+name: deploy / staging (web)
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+concurrency:
+  group: staging-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy apps/web to Vercel (staging)
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Preflight secrets
+        run: |
+          : "${VERCEL_TOKEN:?Missing VERCEL_TOKEN secret}"
+          : "${VERCEL_ORG_ID:?Missing VERCEL_ORG_ID secret}"
+          : "${VERCEL_PROJECT_ID:?Missing VERCEL_PROJECT_ID secret}"
+
+      - name: Install deps (workspace root)
+        run: pnpm install
+
+      - name: Install Vercel CLI
+        run: pnpm dlx -y vercel@latest --version
+
+      - name: Pull Vercel env (preview)
+        working-directory: apps/web
+        run: |
+          pnpm dlx -y vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
+
+      - name: Build (vercel prebuild)
+        working-directory: apps/web
+        run: |
+          pnpm dlx -y vercel@latest build --token="$VERCEL_TOKEN"
+
+      - name: Deploy to Vercel (staging/preview)
+        id: deploy
+        working-directory: apps/web
+        run: |
+          url=$(pnpm dlx -y vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
+          echo "deployment_url=$url" >> $GITHUB_OUTPUT
+
+      - name: Output deployment URL
+        run: echo "Staging deployment: ${{ steps.deploy.outputs.deployment_url }}"
