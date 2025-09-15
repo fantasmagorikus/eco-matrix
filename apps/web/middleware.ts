@@ -36,7 +36,8 @@ export function middleware(req: NextRequest) {
 
   // Basic structured log to stdout (edge/runtime). Avoid logging bodies.
   try {
-    // minimal log; in real app route this to your logger
+    // minimal structured log; route to real logger in app layer
+    // eslint-disable-next-line no-console
     console.log(JSON.stringify({ level: 'info', msg: 'request', requestId, path: req.nextUrl.pathname, method: req.method }))
   } catch {}
 

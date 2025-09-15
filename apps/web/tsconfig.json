@@ -14,7 +14,7 @@
     "jsx": "preserve",
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {}
   },
@@ -27,4 +27,3 @@
     "node_modules"
   ]
 }
-
