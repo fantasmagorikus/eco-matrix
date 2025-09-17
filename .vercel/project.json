@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_rKkn9Xwloeh70JQLUVqAASTAi90f",
+  "orgId": "team_83aSchCjcueg7D5BnJknkzzU",
+  "projectName": "eco-matrix",
+  "settings": {
+    "createdAt": 1757783436711,
+    "framework": "nextjs",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": "apps/web",
+    "directoryListing": false,
+    "nodeVersion": "20.x"
+  }
+}
