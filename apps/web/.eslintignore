@@ -1,0 +1,9 @@
+.next
+node_modules
+coverage
+dist
+out
+*.config.js
+*.config.mjs
+jest.config.js
+playwright.config.ts
