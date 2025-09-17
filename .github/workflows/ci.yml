@@ -25,6 +25,11 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.15.9
+      - name: Ensure pnpm present (npm -g fallback)
+        run: |
+          if ! command -v pnpm >/dev/null 2>&1; then
+            npm i -g pnpm@9.15.9
+          fi
       - name: Enable corepack + pnpm
         run: |
           corepack enable
@@ -48,6 +53,11 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.15.9
+      - name: Ensure pnpm present (npm -g fallback)
+        run: |
+          if ! command -v pnpm >/dev/null 2>&1; then
+            npm i -g pnpm@9.15.9
+          fi
       - name: Enable corepack + pnpm
         run: |
           corepack enable
@@ -72,6 +82,11 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.15.9
+      - name: Ensure pnpm present (npm -g fallback)
+        run: |
+          if ! command -v pnpm >/dev/null 2>&1; then
+            npm i -g pnpm@9.15.9
+          fi
       - name: Enable corepack + pnpm
         run: |
           corepack enable
@@ -96,6 +111,11 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.15.9
+      - name: Ensure pnpm present (npm -g fallback)
+        run: |
+          if ! command -v pnpm >/dev/null 2>&1; then
+            npm i -g pnpm@9.15.9
+          fi
       - name: Enable corepack + pnpm
         run: |
           corepack enable
@@ -140,6 +160,11 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.15.9
+      - name: Ensure pnpm present (npm -g fallback)
+        run: |
+          if ! command -v pnpm >/dev/null 2>&1; then
+            npm i -g pnpm@9.15.9
+          fi
       - name: Enable corepack + pnpm
         run: |
           corepack enable
