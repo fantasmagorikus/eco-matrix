@@ -16,5 +16,5 @@ jobs:
       - name: Dependency Review (report only)
         uses: actions/dependency-review-action@v4
         with:
-          fail-on-severity: none
+          fail-on-severity: critical
           comment-summary-in-pr: true
